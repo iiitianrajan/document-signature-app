@@ -142,3 +142,16 @@ JWT_SECRET=your_secret_key
 * Validate JWT Token
 * Test Authentication APIs using Postman
 * Verify User Data in MongoDB
+
+## Day 3 — File Upload API
+
+* Create Document Model
+* Setup Multer Middleware
+* Create Upload Folder
+* Implement PDF Upload API
+* Restrict Uploads to PDF Files
+* Store File Metadata in MongoDB
+* Protect Upload Route using JWT
+* Create Get Documents API
+* Test File Upload using Postman
+* Verify Uploaded Documents in MongoDB
