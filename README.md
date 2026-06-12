@@ -155,3 +155,17 @@ JWT_SECRET=your_secret_key
 * Create Get Documents API
 * Test File Upload using Postman
 * Verify Uploaded Documents in MongoDB
+
+## Day 4 — View & List Documents
+
+* Create Get Documents API
+* Protect Documents API using JWT
+* Fetch User Documents from MongoDB
+* Create Documents Page
+* Display Uploaded Documents
+* Setup Axios Service
+* Install react-pdf
+* Create PDF Viewer Component
+* Add PDF Preview Functionality
+* Build Basic Dashboard UI
+* Test End-to-End Document Listing

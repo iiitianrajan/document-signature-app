@@ -26,3 +26,20 @@ exports.uploadDocument = async (req, res) => {
     });
   }
 };
+
+exports.getDocuments = async (req, res) => {
+  try {
+    const documents = await Document.find({
+      owner: req.user.id,
+    });
+
+    res.status(200).json({
+      success: true,
+      documents,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
