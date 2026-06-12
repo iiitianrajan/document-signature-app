@@ -4,6 +4,9 @@ const express = require("express");
 const cors = require("cors");
 
 const connectDB = require("./src/config/db");
+const authRoutes = require("./src/routes/authRoutes");
+const userRoutes = require("./src/routes/userRoutes");
+
 
 const app = express();
 
@@ -11,6 +14,10 @@ connectDB();
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("API Running");

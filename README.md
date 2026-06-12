@@ -128,3 +128,17 @@ JWT_SECRET=your_secret_key
 * Configure MongoDB Atlas
 * Create Initial Folder Structure
 * Create Test API
+
+
+## Day 2 — Authentication System (JWT)
+
+* Create User Model
+* Implement User Registration API
+* Implement User Login API
+* Hash Passwords using Bcrypt
+* Generate JWT Token on Login
+* Create Authentication Middleware
+* Create Protected Route
+* Validate JWT Token
+* Test Authentication APIs using Postman
+* Verify User Data in MongoDB
