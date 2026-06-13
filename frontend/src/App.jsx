@@ -4,7 +4,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
-import Documents from "./pages/Documents";
+import DocumentViewer from "./pages/DocumentViewer";
+
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/documents" element={<Documents />} />
+      <Route path="/document/:id" element={<DocumentViewer />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

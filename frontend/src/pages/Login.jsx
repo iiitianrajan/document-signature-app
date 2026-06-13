@@ -1,6 +1,59 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import {BadgeCheck} from "lucide-react"
 
 export default function Login() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]:
+        e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const res =
+        await axios.post(
+          "http://localhost:5000/api/auth/login",
+          formData
+        );
+
+      localStorage.setItem(
+        "token",
+        res.data.token
+      );
+
+      navigate("/dashboard");
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Login Failed"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-950 flex items-center justify-center px-4">
       <div className="max-w-6xl w-full grid lg:grid-cols-2 bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl overflow-hidden shadow-2xl">
@@ -13,28 +66,39 @@ export default function Login() {
             </h1>
 
             <p className="text-lg text-gray-300 mb-8">
-              Securely upload, manage, preview and sign PDF documents.
+              Securely upload,
+              manage, preview and
+              sign PDF documents.
             </p>
 
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <span>✅</span>
-                <span>JWT Authentication</span>
+                <span><BadgeCheck/></span>
+                <span>
+                  JWT Authentication
+                </span>
               </div>
 
               <div className="flex items-center gap-3">
-                <span>✅</span>
-                <span>Secure PDF Uploads</span>
+                <span><BadgeCheck/></span>
+                <span>
+                  Secure PDF Uploads
+                </span>
               </div>
 
               <div className="flex items-center gap-3">
-                <span>✅</span>
-                <span>Document Management</span>
+                <span><BadgeCheck/></span>
+                <span>
+                  Document Management
+                </span>
               </div>
 
               <div className="flex items-center gap-3">
-                <span>✅</span>
-                <span>Digital Signature Workflow</span>
+                <span><BadgeCheck/></span>
+                <span>
+                  Digital Signature
+                  Workflow
+                </span>
               </div>
             </div>
           </div>
@@ -48,10 +112,22 @@ export default function Login() {
             </h2>
 
             <p className="text-gray-500 mb-8">
-              Login to access your dashboard
+              Login to access your
+              dashboard
             </p>
 
-            <form className="space-y-5">
+            {error && (
+              <div className="bg-red-100 text-red-600 p-3 rounded-lg mb-4">
+                {error}
+              </div>
+            )}
+
+            <form
+              onSubmit={
+                handleSubmit
+              }
+              className="space-y-5"
+            >
               <div>
                 <label className="block mb-2 text-gray-700 font-medium">
                   Email Address
@@ -59,7 +135,15 @@ export default function Login() {
 
                 <input
                   type="email"
-                  placeholder="Enter you email "
+                  name="email"
+                  value={
+                    formData.email
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  placeholder="Enter your email"
+                  required
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -71,21 +155,33 @@ export default function Login() {
 
                 <input
                   type="password"
-                  placeholder="••••••••"
+                  name="password"
+                  value={
+                    formData.password
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  placeholder="Enter password"
+                  required
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <button
                 type="submit"
+                disabled={loading}
                 className="w-full bg-blue-600 hover:bg-blue-700 transition text-white py-3 rounded-xl font-semibold"
               >
-                Login
+                {loading
+                  ? "Logging in..."
+                  : "Login"}
               </button>
             </form>
 
             <p className="text-center mt-6 text-gray-600">
-              Don't have an account?{" "}
+              Don't have an
+              account?{" "}
               <Link
                 to="/register"
                 className="text-blue-600 font-semibold"

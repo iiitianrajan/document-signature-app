@@ -169,3 +169,20 @@ JWT_SECRET=your_secret_key
 * Add PDF Preview Functionality
 * Build Basic Dashboard UI
 * Test End-to-End Document Listing
+
+## Day 5 — Signature Schema & Logic
+
+* Create Signature Model
+* Add documentId Reference
+* Add signer Reference
+* Add Signature Status Field
+* Add Signature Coordinates (x, y)
+* Add Page Number Support
+* Create Save Signature API
+* Protect Signature API using JWT
+* Save Signature Data in MongoDB
+* Create Document Viewer Page
+* Setup React PDF Viewer
+* Add PDF Preview Route
+* Display Signature Placeholder
+* Test End-to-End Signature Workflow

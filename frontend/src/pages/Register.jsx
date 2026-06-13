@@ -1,6 +1,54 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BadgeCheck } from "lucide-react";
 
-export default function Login() {
+export default function Register() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]:
+        e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      setError("");
+
+      await axios.post(
+        "http://localhost:5000/api/auth/register",
+        formData
+      );
+
+      navigate("/");
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Registration Failed"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-950 flex items-center justify-center px-4">
       <div className="max-w-6xl w-full grid lg:grid-cols-2 bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl overflow-hidden shadow-2xl">
@@ -13,28 +61,39 @@ export default function Login() {
             </h1>
 
             <p className="text-lg text-gray-300 mb-8">
-              Securely upload, manage, preview and sign PDF documents.
+              Securely upload, manage,
+              preview and sign PDF
+              documents.
             </p>
 
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <span>✅</span>
-                <span>JWT Authentication</span>
+                <BadgeCheck />
+                <span>
+                  JWT Authentication
+                </span>
               </div>
 
               <div className="flex items-center gap-3">
-                <span>✅</span>
-                <span>Secure PDF Uploads</span>
+                <BadgeCheck />
+                <span>
+                  Secure PDF Uploads
+                </span>
               </div>
 
               <div className="flex items-center gap-3">
-                <span>✅</span>
-                <span>Document Management</span>
+                <BadgeCheck />
+                <span>
+                  Document Management
+                </span>
               </div>
 
               <div className="flex items-center gap-3">
-                <span>✅</span>
-                <span>Digital Signature Workflow</span>
+                <BadgeCheck />
+                <span>
+                  Digital Signature
+                  Workflow
+                </span>
               </div>
             </div>
           </div>
@@ -43,49 +102,95 @@ export default function Login() {
         {/* Right Section */}
         <div className="bg-white p-8 lg:p-12">
           <div className="max-w-md mx-auto">
+
             <h2 className="text-4xl font-bold text-gray-800 mb-2">
-              Welcome Back
+              Create Account
             </h2>
 
             <p className="text-gray-500 mb-8">
-              Login to access your dashboard
+              Create your account to
+              start signing documents
             </p>
 
-           <form className="space-y-5">
-  <input
-    type="text"
-    placeholder="Full Name"
-    className="w-full border border-gray-300 rounded-xl px-4 py-3"
-  />
+            {error && (
+              <div className="bg-red-100 text-red-600 p-3 rounded-lg mb-4">
+                {error}
+              </div>
+            )}
 
-  <input
-    type="email"
-    placeholder="Email Address"
-    className="w-full border border-gray-300 rounded-xl px-4 py-3"
-  />
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-5"
+            >
+              <div>
+                <label className="block mb-2 text-gray-700 font-medium">
+                  Full Name
+                </label>
 
-  <input
-    type="password"
-    placeholder="Password"
-    className="w-full border border-gray-300 rounded-xl px-4 py-3"
-  />
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Enter your full name"
+                  required
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
 
-  <button
-    type="submit"
-    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold"
-  >
-    Create Account
-  </button>
-</form>
-            <p className="text-center mt-6 text-gray-600">
-              Don't have an account?{" "}
-              <Link
-                to="/register"
-                className="text-blue-600 font-semibold"
+              <div>
+                <label className="block mb-2 text-gray-700 font-medium">
+                  Email Address
+                </label>
+
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  required
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 text-gray-700 font-medium">
+                  Password
+                </label>
+
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Create a password"
+                  required
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-green-600 hover:bg-green-700 transition text-white py-3 rounded-xl font-semibold"
               >
-                Register
+                {loading
+                  ? "Creating Account..."
+                  : "Create Account"}
+              </button>
+            </form>
+
+            <p className="text-center mt-6 text-gray-600">
+              Already have an account?{" "}
+              <Link
+                to="/"
+                className="text-green-600 font-semibold hover:underline"
+              >
+                Login
               </Link>
             </p>
+
           </div>
         </div>
 
