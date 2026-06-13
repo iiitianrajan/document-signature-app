@@ -205,3 +205,17 @@ JWT_SECRET=your_secret_key
 * Save Signature Position to MongoDB
 * Test End-to-End Signature Placement Flow
 
+## Day 7 — Buffer & Testing
+
+* Debug Frontend and Backend Integration
+* Verify JWT Authentication Flow
+* Test User Registration API
+* Test User Login API
+* Test PDF Upload API
+* Test Document Retrieval API
+* Test Signature Save API
+* Validate MongoDB Collections
+* Create Postman API Collection
+* Fix UI and API Integration Issues
+* Perform End-to-End Application Testing
+
