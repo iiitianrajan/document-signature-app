@@ -186,3 +186,22 @@ JWT_SECRET=your_secret_key
 * Add PDF Preview Route
 * Display Signature Placeholder
 * Test End-to-End Signature Workflow
+
+## Day 6 — PDF Editor Integration
+
+* Create Document Viewer Page
+* Pass Document ID using Route Params
+* Pass PDF URL using React Router State
+* Integrate React PDF Viewer
+* Configure PDF.js Worker
+* Display PDF Inside Application
+* Create Draggable Signature Placeholder
+* Implement Custom Drag and Drop Logic
+* Capture Signature Coordinates (X, Y)
+* Display Live Coordinate Tracking
+* Create Signature Service
+* Connect Save Signature API
+* Send Document ID and Coordinates
+* Save Signature Position to MongoDB
+* Test End-to-End Signature Placement Flow
+
