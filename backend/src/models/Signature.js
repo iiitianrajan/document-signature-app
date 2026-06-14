@@ -28,23 +28,20 @@ const signatureSchema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
+    publicToken: {
+      type: String,
+      unique: true,
+    },
 
     status: {
       type: String,
-      enum: [
-        "PENDING",
-        "SIGNED",
-        "REJECTED",
-      ],
+      enum: ["PENDING", "SIGNED", "REJECTED"],
       default: "PENDING",
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-module.exports = mongoose.model(
-  "Signature",
-  signatureSchema
-);
+module.exports = mongoose.model("Signature", signatureSchema);

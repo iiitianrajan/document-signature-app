@@ -3,11 +3,19 @@ import { getDocuments } from "../services/documentService";
 import { useNavigate } from "react-router-dom";
 import UploadDocument from "../components/UploadDocument";
 import { FileText, Clock, CheckCircle, LogOut, Eye } from "lucide-react";
+import {
+  getSignatureByDocument,
+  generateLink,
+  sendSignatureEmail
+} from "../services/signatureService";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [email, setEmail] =
+  useState("");
+  const [generatedLink, setGeneratedLink] = useState("");
 
   useEffect(() => {
     fetchDocuments();
@@ -32,10 +40,70 @@ export default function Dashboard() {
     }
   };
 
+  const handleSendEmail =
+  async () => {
+
+    if (!email) {
+      alert("Enter email");
+      return;
+    }
+
+    if (!generatedLink) {
+      alert(
+        "Generate link first"
+      );
+      return;
+    }
+
+    try {
+
+      const token =
+        localStorage.getItem(
+          "token"
+        );
+
+      const res =
+        await sendSignatureEmail(
+          email,
+          generatedLink,
+          token
+        );
+
+      alert(
+        res.data.message
+      );
+
+      setEmail("");
+
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Failed to send email"
+      );
+    }
+  };
   const previewDocument = (filePath) => {
     const fixedPath = filePath.replace(/\\/g, "/");
 
     window.open(`http://localhost:5000/${fixedPath}`, "_blank");
+  };
+
+  const handleGenerateLink = async (documentId) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const sigRes = await getSignatureByDocument(documentId, token);
+
+      const signatureId = sigRes.data.signature._id;
+
+      const linkRes = await generateLink(signatureId, token);
+
+      setGeneratedLink(linkRes.data.link);
+    } catch (error) {
+      console.error(error);
+      alert("Create a signature first");
+    }
   };
 
   const pendingDocs = documents.filter(
@@ -209,6 +277,12 @@ export default function Dashboard() {
                         <Eye size={18} />
                         Preview
                       </button>
+                      <button
+                        onClick={() => handleGenerateLink(doc._id)}
+                        className=" bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-xl"
+                      >
+                        Generate Link
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -216,6 +290,75 @@ export default function Dashboard() {
             </div>
           )}
         </div>
+        {generatedLink && (
+          <div className="mt-6 p-4 bg-green-100 rounded-xl">
+            <h3 className="font-bold mb-2">Public Signature Link</h3>
+
+            <input
+              value={generatedLink}
+              readOnly
+              className="
+      w-full
+      border
+      p-2
+      rounded"
+            />
+
+            <button
+              onClick={() => navigator.clipboard.writeText(generatedLink)}
+              className="
+      mt-3
+      bg-blue-600
+      text-white
+      px-4
+      py-2
+      rounded"
+            >
+              Copy Link
+            </button>
+            {generatedLink && (
+  <div className="mt-6 border rounded-xl p-4">
+
+    <h3 className="font-bold mb-3">
+      Send Signature Invitation
+    </h3>
+
+    <input
+      type="email"
+      placeholder="Enter recipient email"
+      value={email}
+      onChange={(e) =>
+        setEmail(
+          e.target.value
+        )
+      }
+      className="
+      w-full
+      border
+      rounded-lg
+      p-3
+      mb-3"
+    />
+
+    <button
+      onClick={
+        handleSendEmail
+      }
+      className="
+      bg-green-600
+      hover:bg-green-700
+      text-white
+      px-5
+      py-2
+      rounded-lg"
+    >
+      Send Invitation
+    </button>
+
+  </div>
+)}
+          </div>
+        )}
       </div>
     </div>
   );

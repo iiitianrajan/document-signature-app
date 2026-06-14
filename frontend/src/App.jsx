@@ -5,7 +5,8 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import DocumentViewer from "./pages/DocumentViewer";
-
+import PublicSign from "./pages/PublicSign";
+import PublicDocumentViewer from "./pages/PublicDocumentViewer";
 
 function App() {
   return (
@@ -14,6 +15,11 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/document/:id" element={<DocumentViewer />} />
+      <Route path="/sign/:token" element={<PublicSign />} />
+      <Route
+        path="/public-document/:token"
+        element={<PublicDocumentViewer />}
+      />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

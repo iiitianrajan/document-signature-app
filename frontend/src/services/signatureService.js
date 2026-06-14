@@ -27,3 +27,52 @@ export const finalizePdf = (
       },
     }
   );
+
+  export const getPublicSignature =
+  (token) => {
+    return axios.get(
+      `${API}/public/${token}`
+    );
+  };
+
+  export const getSignatureByDocument =
+  (documentId, token) =>
+    axios.get(
+      `${API}/document/${documentId}`,
+      {
+        headers: {
+          Authorization:
+            `Bearer ${token}`,
+        },
+      }
+    );
+
+export const generateLink =
+  (signatureId, token) =>
+    axios.get(
+      `${API}/link/${signatureId}`,
+      {
+        headers: {
+          Authorization:
+            `Bearer ${token}`,
+        },
+      }
+    );
+
+    export const sendSignatureEmail = (
+  email,
+  link,
+  token
+) =>
+  axios.post(
+    `${API}/send-email`,
+    {
+      email,
+      link,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );

@@ -230,3 +230,21 @@ JWT_SECRET=your_secret_key
 - Added signed PDF preview
 - Added signed PDF download
 
+## Day 9 — Email Invitations & Public Signature Links
+
+* Generated UUID-based public signature links
+* Implemented token-based public access system
+* Created Public Signature Page
+* Developed public signature API endpoint
+* Added signature retrieval using public token
+* Configured Nodemailer for email delivery
+* Integrated Gmail SMTP service
+* Implemented Email Invitation API
+* Designed professional email template
+* Added secure document signing links in emails
+* Implemented public PDF access workflow
+* Tested email delivery and public signing flow
+* Verified token validation and document retrieval
+* Successfully completed end-to-end signature invitation process
+
+
