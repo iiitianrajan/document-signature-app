@@ -219,3 +219,14 @@ JWT_SECRET=your_secret_key
 * Fix UI and API Integration Issues
 * Perform End-to-End Application Testing
 
+## Day 8 — Generate Final Signed PDF
+
+- Integrated PDF-Lib
+- Generated signed PDF dynamically
+- Embedded signer information
+- Embedded timestamp
+- Saved signed PDF to disk
+- Updated document status to SIGNED
+- Added signed PDF preview
+- Added signed PDF download
+

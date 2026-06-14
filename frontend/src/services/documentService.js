@@ -12,3 +12,20 @@ export const getDocuments = (
     },
   });
 };
+
+export const uploadDocument = (
+  formData,
+  token
+) => {
+  return axios.post(
+    "http://localhost:5000/api/docs/upload",
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type":
+          "multipart/form-data",
+      },
+    }
+  );
+};

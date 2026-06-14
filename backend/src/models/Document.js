@@ -30,13 +30,11 @@ const documentSchema = new mongoose.Schema(
 
     status: {
       type: String,
+      enum: ["PENDING", "SIGNED", "REJECTED"],
       default: "PENDING",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-module.exports = mongoose.model(
-  "Document",
-  documentSchema
-);
+module.exports = mongoose.model("Document", documentSchema);

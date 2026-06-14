@@ -4,20 +4,12 @@ const router = express.Router();
 
 const {
   createSignature,
-} = require(
-  "../controllers/signatureController"
-);
+  finalizeSignature,
+} = require("../controllers/signatureController");
 
-const {
-  protect,
-} = require(
-  "../middleware/authMiddleware"
-);
+const { protect } = require("../middleware/authMiddleware");
 
-router.post(
-  "/",
-  protect,
-  createSignature
-);
+router.post("/", protect, createSignature);
+router.post("/finalize/:id", protect, finalizeSignature);
 
 module.exports = router;

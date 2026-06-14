@@ -13,3 +13,17 @@ export const saveSignature = (
     },
   });
 };
+
+export const finalizePdf = (
+  documentId,
+  token
+) =>
+  axios.post(
+    `http://localhost:5000/api/signatures/finalize/${documentId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
