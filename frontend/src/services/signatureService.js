@@ -1,12 +1,8 @@
 import axios from "axios";
 
-const API =
-  "http://localhost:5000/api/signatures";
+const API = "http://localhost:5000/api/signatures";
 
-export const saveSignature = (
-  data,
-  token
-) => {
+export const saveSignature = (data, token) => {
   return axios.post(API, data, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -14,10 +10,7 @@ export const saveSignature = (
   });
 };
 
-export const finalizePdf = (
-  documentId,
-  token
-) =>
+export const finalizePdf = (documentId, token) =>
   axios.post(
     `http://localhost:5000/api/signatures/finalize/${documentId}`,
     {},
@@ -25,54 +18,38 @@ export const finalizePdf = (
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
 
-  export const getPublicSignature =
-  (token) => {
-    return axios.get(
-      `${API}/public/${token}`
-    );
-  };
+export const getPublicSignature = (token) => {
+  return axios.get(`${API}/public/${token}`);
+};
 
-  export const getSignatureByDocument =
-  (documentId, token) =>
-    axios.get(
-      `${API}/document/${documentId}`,
-      {
-        headers: {
-          Authorization:
-            `Bearer ${token}`,
-        },
-      }
-    );
+export const getSignatureByDocument = (documentId, token) =>
+  axios.get(`${API}/document/${documentId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-export const generateLink =
-  (signatureId, token) =>
-    axios.get(
-      `${API}/link/${signatureId}`,
-      {
-        headers: {
-          Authorization:
-            `Bearer ${token}`,
-        },
-      }
-    );
+export const generateLink = (signatureId, token) =>
+  axios.get(`${API}/link/${signatureId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-    export const sendSignatureEmail = (
-  email,
-  link,
-  token
-) =>
+export const sendSignatureEmail = (email, link, documentId, token) =>
   axios.post(
     `${API}/send-email`,
     {
       email,
       link,
+      documentId,
     },
     {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );

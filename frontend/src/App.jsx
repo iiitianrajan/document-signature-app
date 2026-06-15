@@ -7,6 +7,7 @@ import NotFound from "./pages/NotFound";
 import DocumentViewer from "./pages/DocumentViewer";
 import PublicSign from "./pages/PublicSign";
 import PublicDocumentViewer from "./pages/PublicDocumentViewer";
+import AuditLogs from "./pages/AuditLogs";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         path="/public-document/:token"
         element={<PublicDocumentViewer />}
       />
+      <Route path="/audit/:documentId" element={<AuditLogs />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

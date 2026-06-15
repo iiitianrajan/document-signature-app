@@ -6,6 +6,7 @@ const Signature = require("../models/Signature");
 const Document = require("../models/Document");
 const { v4: uuidv4 } = require("uuid");
 const transporter = require("../utils/sendEmail");
+const createAudit = require("../utils/createAudit");
 
 exports.createSignature = async (req, res) => {
   try {
@@ -18,6 +19,15 @@ exports.createSignature = async (req, res) => {
       y,
       page,
     });
+    await createAudit({
+  documentId,
+  userId:
+    req.user.id,
+  action:
+    "SIGNATURE_PLACED",
+  ipAddress:
+    req.ip,
+});
 
     res.status(201).json({
       success: true,
@@ -81,6 +91,16 @@ exports.finalizeSignature = async (req, res) => {
     document.status = "SIGNED";
 
     await document.save();
+    await createAudit({
+  documentId:
+    document._id,
+  userId:
+    req.user.id,
+  action:
+    "SIGNED_PDF_GENERATED",
+  ipAddress:
+    req.ip,
+});
 
     res.json({
       success: true,
@@ -162,21 +182,18 @@ exports.getSignatureByDocument = async (req, res) => {
   }
 };
 
-exports.sendSignatureEmail =
-  async (req, res) => {
-    try {
-      const { email, link } =
-        req.body;
+exports.sendSignatureEmail = async (req, res) => {
+  try {
+    const { email, link } = req.body;
 
-      await transporter.sendMail({
-        from: `"Document Signature Platform" <${process.env.EMAIL_USER}>`,
+    await transporter.sendMail({
+      from: `"Document Signature Platform" <${process.env.EMAIL_USER}>`,
 
-        to: email,
+      to: email,
 
-        subject:
-          "Document Signature Request - Document Signature Platform",
+      subject: "Document Signature Request - Document Signature Platform",
 
-        html: `
+      html: `
         <div style="
           font-family: Arial, sans-serif;
           max-width: 600px;
@@ -265,17 +282,26 @@ exports.sendSignatureEmail =
 
         </div>
         `,
-      });
+    });
 
-      res.json({
-        success: true,
-        message:
-          "Email sent successfully",
-      });
+    await createAudit({
+  documentId:
+    req.body.documentId,
+  userId:
+    req.user.id,
+  action:
+    "SIGNATURE_EMAIL_SENT",
+  ipAddress:
+    req.ip,
+});
 
-    } catch (error) {
-      res.status(500).json({
-        message: error.message,
-      });
-    }
-  };
+    res.json({
+      success: true,
+      message: "Email sent successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};

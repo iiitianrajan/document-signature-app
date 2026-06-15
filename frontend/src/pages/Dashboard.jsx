@@ -6,16 +6,16 @@ import { FileText, Clock, CheckCircle, LogOut, Eye } from "lucide-react";
 import {
   getSignatureByDocument,
   generateLink,
-  sendSignatureEmail
+  sendSignatureEmail,
 } from "../services/signatureService";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [email, setEmail] =
-  useState("");
+  const [email, setEmail] = useState("");
   const [generatedLink, setGeneratedLink] = useState("");
+  const [selectedDocumentId, setSelectedDocumentId] = useState("");
 
   useEffect(() => {
     fetchDocuments();
@@ -40,47 +40,30 @@ export default function Dashboard() {
     }
   };
 
-  const handleSendEmail =
-  async () => {
-
+  const handleSendEmail = async () => {
     if (!email) {
       alert("Enter email");
       return;
     }
 
     if (!generatedLink) {
-      alert(
-        "Generate link first"
-      );
+      alert("Generate link first");
       return;
     }
 
     try {
+      const token = localStorage.getItem("token");
 
-      const token =
-        localStorage.getItem(
-          "token"
-        );
+      const res = await sendSignatureEmail(email, generatedLink, 
+        selectedDocumentId,token);
 
-      const res =
-        await sendSignatureEmail(
-          email,
-          generatedLink,
-          token
-        );
-
-      alert(
-        res.data.message
-      );
+      alert(res.data.message);
 
       setEmail("");
-
     } catch (error) {
       console.error(error);
 
-      alert(
-        "Failed to send email"
-      );
+      alert("Failed to send email");
     }
   };
   const previewDocument = (filePath) => {
@@ -100,6 +83,8 @@ export default function Dashboard() {
       const linkRes = await generateLink(signatureId, token);
 
       setGeneratedLink(linkRes.data.link);
+
+      setSelectedDocumentId(documentId);
     } catch (error) {
       console.error(error);
       alert("Create a signature first");
@@ -278,6 +263,18 @@ export default function Dashboard() {
                         Preview
                       </button>
                       <button
+                        onClick={() => navigate(`/audit/${doc._id}`)}
+                        className="
+bg-purple-600
+hover:bg-purple-700
+text-white
+px-4
+py-2
+rounded-xl"
+                      >
+                        Audit Trail
+                      </button>
+                      <button
                         onClick={() => handleGenerateLink(doc._id)}
                         className=" bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-xl"
                       >
@@ -317,46 +314,36 @@ export default function Dashboard() {
               Copy Link
             </button>
             {generatedLink && (
-  <div className="mt-6 border rounded-xl p-4">
+              <div className="mt-6 border rounded-xl p-4">
+                <h3 className="font-bold mb-3">Send Signature Invitation</h3>
 
-    <h3 className="font-bold mb-3">
-      Send Signature Invitation
-    </h3>
-
-    <input
-      type="email"
-      placeholder="Enter recipient email"
-      value={email}
-      onChange={(e) =>
-        setEmail(
-          e.target.value
-        )
-      }
-      className="
+                <input
+                  type="email"
+                  placeholder="Enter recipient email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="
       w-full
       border
       rounded-lg
       p-3
       mb-3"
-    />
+                />
 
-    <button
-      onClick={
-        handleSendEmail
-      }
-      className="
+                <button
+                  onClick={handleSendEmail}
+                  className="
       bg-green-600
       hover:bg-green-700
       text-white
       px-5
       py-2
       rounded-lg"
-    >
-      Send Invitation
-    </button>
-
-  </div>
-)}
+                >
+                  Send Invitation
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
