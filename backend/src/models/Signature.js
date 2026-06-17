@@ -23,6 +23,10 @@ const signatureSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    signatureImage: {
+      type: String,
+      default: "",
+    },
 
     page: {
       type: Number,
@@ -32,6 +36,14 @@ const signatureSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
+    signatureImage: {
+      type: String,
+      default: "",
+    },
+    rejectReason: {
+  type: String,
+  default: "",
+},
 
     status: {
       type: String,

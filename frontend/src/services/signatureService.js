@@ -53,3 +53,12 @@ export const sendSignatureEmail = (email, link, documentId, token) =>
       },
     },
   );
+
+export const savePublicSignature = (token, signatureImage) =>
+  axios.post(`${API}/public-sign/${token}`, {
+    signatureImage,
+  });
+export const rejectSignature = (token, reason) =>
+  axios.post(`${API}/reject/${token}`, {
+    reason,
+  });

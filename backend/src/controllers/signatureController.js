@@ -20,14 +20,11 @@ exports.createSignature = async (req, res) => {
       page,
     });
     await createAudit({
-  documentId,
-  userId:
-    req.user.id,
-  action:
-    "SIGNATURE_PLACED",
-  ipAddress:
-    req.ip,
-});
+      documentId,
+      userId: req.user.id,
+      action: "SIGNATURE_PLACED",
+      ipAddress: req.ip,
+    });
 
     res.status(201).json({
       success: true,
@@ -68,11 +65,18 @@ exports.finalizeSignature = async (req, res) => {
 
     const page = pages[signature.page - 1];
 
-    page.drawText("Digitally Signed", {
-      x: signature.x,
-      y: signature.y,
-      size: 18,
-    });
+    if (signature.signatureImage) {
+      const base64 = signature.signatureImage.split(",")[1];
+
+      const pngImage = await pdfDoc.embedPng(Buffer.from(base64, "base64"));
+
+      page.drawImage(pngImage, {
+        x: signature.x,
+        y: signature.y,
+        width: 120,
+        height: 60,
+      });
+    }
 
     page.drawText(new Date().toLocaleString(), {
       x: signature.x,
@@ -92,15 +96,11 @@ exports.finalizeSignature = async (req, res) => {
 
     await document.save();
     await createAudit({
-  documentId:
-    document._id,
-  userId:
-    req.user.id,
-  action:
-    "SIGNED_PDF_GENERATED",
-  ipAddress:
-    req.ip,
-});
+      documentId: document._id,
+      userId: req.user.id,
+      action: "SIGNED_PDF_GENERATED",
+      ipAddress: req.ip,
+    });
 
     res.json({
       success: true,
@@ -285,19 +285,99 @@ exports.sendSignatureEmail = async (req, res) => {
     });
 
     await createAudit({
-  documentId:
-    req.body.documentId,
-  userId:
-    req.user.id,
-  action:
-    "SIGNATURE_EMAIL_SENT",
-  ipAddress:
-    req.ip,
-});
+      documentId: req.body.documentId,
+      userId: req.user.id,
+      action: "SIGNATURE_EMAIL_SENT",
+      ipAddress: req.ip,
+    });
 
     res.json({
       success: true,
       message: "Email sent successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+exports.savePublicSignature = async (req, res) => {
+  try {
+    const { signatureImage } = req.body;
+
+    const signature = await Signature.findOne({
+      publicToken: req.params.token,
+    });
+
+    if (!signature) {
+      return res.status(404).json({
+        message: "Signature not found",
+      });
+    }
+
+    signature.signatureImage = signatureImage;
+
+    signature.signatureImage = signatureImage;
+
+    signature.status = "SIGNED";
+
+    await signature.save();
+
+    const document = await Document.findById(signature.documentId);
+
+    if (document) {
+      document.status = "SIGNED";
+
+      await document.save();
+    }
+
+    await createAudit({
+      documentId: signature.documentId,
+      action: "PUBLIC_SIGNATURE_COMPLETED",
+      ipAddress: req.ip,
+    });
+
+    res.json({
+      success: true,
+      message: "Document signed successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+exports.rejectSignature = async (req, res) => {
+  try {
+    const { reason } = req.body;
+
+    const signature = await Signature.findOne({
+      publicToken: req.params.token,
+    });
+
+    if (!signature) {
+      return res.status(404).json({
+        message: "Signature not found",
+      });
+    }
+
+    signature.status = "REJECTED";
+
+    signature.rejectReason = reason;
+
+    await signature.save();
+
+    await createAudit({
+      documentId: signature.documentId,
+      action: "DOCUMENT_REJECTED",
+      ipAddress: req.ip,
+    });
+
+    res.json({
+      success: true,
+      message: "Document rejected",
     });
   } catch (error) {
     res.status(500).json({

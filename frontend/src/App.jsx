@@ -22,6 +22,7 @@ function App() {
         element={<PublicDocumentViewer />}
       />
       <Route path="/audit/:documentId" element={<AuditLogs />} />
+      
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

@@ -9,6 +9,8 @@ const {
   getPublicSignature,
   getSignatureByDocument,
   sendSignatureEmail,
+  savePublicSignature,
+  rejectSignature
 } = require("../controllers/signatureController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -19,5 +21,7 @@ router.get("/link/:id", protect, generateLink);
 router.get("/public/:token", getPublicSignature);
 router.get("/document/:documentId", protect, getSignatureByDocument);
 router.post("/send-email", protect, sendSignatureEmail);
+router.post("/public-sign/:token", savePublicSignature);
+router.post("/reject/:token", rejectSignature);
 
 module.exports = router;

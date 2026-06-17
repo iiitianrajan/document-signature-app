@@ -271,3 +271,17 @@ JWT_SECRET=your_secret_key
 * Integrated Activity Icons and Timeline View
 * Tested Complete Audit Logging Workflow
 * Verified End-to-End Document Activity Tracking
+
+
+## Day 11 — Signature Status Updates
+
+* Implemented public signature link workflow
+* Added public PDF preview page
+* Added Accept & Sign functionality
+* Added Reject Document functionality
+* Added rejection reason support
+* Implemented signature status tracking (PENDING, SIGNED, REJECTED)
+* Stored signer signature image
+* Updated document status automatically
+* Added audit logging for signature actions
+* Enhanced public signing experience
