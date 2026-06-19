@@ -14,3 +14,9 @@ build
 # OS files
 .DS_Store
 Thumbs.db
+
+# Uploaded documents
+uploads/
+
+# Generated signed PDFs
+signed-pdfs
