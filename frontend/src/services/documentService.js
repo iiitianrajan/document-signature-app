@@ -1,7 +1,8 @@
 import axios from "axios";
+import API_BASE_URL from "../config/api";
 
 const API =
-  "http://localhost:5000/api/docs";
+  `${API_BASE_URL}/api/docs`;
 
 export const getDocuments = (
   token
@@ -18,7 +19,7 @@ export const uploadDocument = (
   token
 ) => {
   return axios.post(
-    "http://localhost:5000/api/docs/upload",
+    `${API_BASE_URL}/api/docs/upload`,
     formData,
     {
       headers: {

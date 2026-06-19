@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FileText, User, Clock, PenTool } from "lucide-react";
 
 import { getPublicSignature } from "../services/signatureService";
+import API_BASE_URL from "../config/api";
 
 export default function PublicSign() {
   const navigate = useNavigate();
@@ -111,7 +112,7 @@ export default function PublicSign() {
 
               navigate(`/public-document/${token}`, {
                 state: {
-                  pdfUrl: `http://localhost:5000/${fixedPath}`,
+                  pdfUrl: `${API_BASE_URL}/${fixedPath}`,
                   documentId: signature.documentId._id,
                 },
               });

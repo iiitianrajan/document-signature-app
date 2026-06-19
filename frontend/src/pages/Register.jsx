@@ -34,7 +34,7 @@ export default function Register() {
       setError("");
 
       await axios.post(
-        "http://localhost:5000/api/auth/register",
+        `${API_BASE_URL}/api/auth/register`,
         formData
       );
 

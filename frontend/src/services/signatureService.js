@@ -1,6 +1,7 @@
 import axios from "axios";
+import API_BASE_URL from "../config/api";
 
-const API = "http://localhost:5000/api/signatures";
+const API = `${API_BASE_URL}/api/signatures`;
 
 export const saveSignature = (data, token) => {
   return axios.post(API, data, {
@@ -12,7 +13,7 @@ export const saveSignature = (data, token) => {
 
 export const finalizePdf = (documentId, token) =>
   axios.post(
-    `http://localhost:5000/api/signatures/finalize/${documentId}`,
+    `${API_BASE_URL}/api/signatures/finalize/${documentId}`,
     {},
     {
       headers: {

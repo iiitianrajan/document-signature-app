@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { saveSignature, finalizePdf } from "../services/signatureService";
+import API_BASE_URL from "../config/api";
 
 import "react-pdf/dist/Page/TextLayer.css";
 import "react-pdf/dist/Page/AnnotationLayer.css";
@@ -51,7 +52,7 @@ export default function PDFViewer({ pdfUrl, documentId }) {
 
       const res = await finalizePdf(documentId, token);
 
-      const url = `http://localhost:5000/${res.data.signedPdf}`;
+      const url = `${API_BASE_URL}/${res.data.signedPdf}`;
 
       setSignedPdfUrl(url);
 

@@ -8,6 +8,7 @@ import {
   generateLink,
   sendSignatureEmail,
 } from "../services/signatureService";
+import API_BASE_URL from "../config/api";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -74,7 +75,7 @@ export default function Dashboard() {
   const previewDocument = (filePath) => {
     const fixedPath = filePath.replace(/\\/g, "/");
 
-    window.open(`http://localhost:5000/${fixedPath}`, "_blank");
+    window.open(`${API_BASE_URL}/${fixedPath}`, "_blank");
   };
 
   const handleGenerateLink = async (documentId) => {
@@ -302,7 +303,7 @@ lg:grid-cols-4 gap-6 mb-8"
 
                           navigate(`/document/${doc._id}`, {
                             state: {
-                              pdfUrl: `http://localhost:5000/${fixedPath}`,
+                              pdfUrl: `${API_BASE_URL}/${fixedPath}`,
                             },
                           });
                         }}
