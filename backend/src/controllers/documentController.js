@@ -1,7 +1,7 @@
 const Document = require("../models/Document");
 
 exports.uploadDocument = async (req, res) => {
-    console.log("REQ.FILE =>", req.file);
+    
   try {
     const document = await Document.create({
         
