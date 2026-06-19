@@ -94,71 +94,193 @@ export default function PDFViewer({ pdfUrl, documentId }) {
     document.addEventListener("mouseup", handleMouseUp);
   };
 
-  return (
-    <>
-      <div className="relative inline-block">
-        <Document file={pdfUrl}>
-          <Page pageNumber={1} />
-        </Document>
+ return (
+  <div className="min-h-screen bg-slate-100 p-6">
 
-        <div
-          onMouseDown={handleMouseDown}
-          className="absolute bg-yellow-400 px-4 py-2 rounded-lg shadow-lg cursor-move select-none font-semibold"
-          style={{
-            left: `${position.x}px`,
-            top: `${position.y}px`,
-            zIndex: 9999,
-          }}
-        >
-          Sign Here
+    <div className="max-w-7xl mx-auto">
+
+      {/* Header */}
+
+      <div className="mb-6">
+        <h1 className="text-4xl font-bold text-slate-800">
+          Document Signature
+        </h1>
+
+        <p className="text-gray-500 mt-2">
+          Drag the signature placeholder to the desired location,
+          then generate the final signed PDF.
+        </p>
+      </div>
+
+      {/* PDF Card */}
+
+      <div className="bg-white rounded-3xl shadow-xl p-6">
+
+        <div className="flex justify-center overflow-auto">
+
+          <div className="relative inline-block">
+
+           <div
+  className="
+    border-4
+    border-blue-500
+    rounded-lg
+    overflow-hidden
+    shadow-lg
+    inline-block
+    bg-white
+  "
+>
+  <Document file={pdfUrl}>
+    <Page pageNumber={1} />
+  </Document>
+</div>
+
+            <div
+              onMouseDown={handleMouseDown}
+              className="
+                absolute
+                bg-yellow-400
+                hover:bg-yellow-500
+                px-4
+                py-2
+                rounded-xl
+                shadow-lg
+                cursor-move
+                select-none
+                font-semibold
+                border
+                border-yellow-600
+              "
+              style={{
+                left: `${position.x}px`,
+                top: `${position.y}px`,
+                zIndex: 9999,
+              }}
+            >
+              ✍ Sign Here
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Position Info */}
+
+      <div className="
+        mt-6
+        bg-white
+        rounded-2xl
+        shadow-md
+        p-4
+      ">
+        <h3 className="font-semibold text-slate-700 mb-2">
+          Signature Position
+        </h3>
+
+        <div className="flex gap-6 text-gray-600">
+          <span>X: {position.x}</span>
+          <span>Y: {position.y}</span>
         </div>
       </div>
 
-      <div className="mt-4 bg-gray-100 p-3 rounded-lg">
-        <h2 className="font-bold">
-          X: {position.x} | Y: {position.y}
-        </h2>
+      {/* Actions */}
+
+      <div className="mt-6 flex flex-wrap gap-4">
+
+        <button
+          onClick={handleSave}
+          className="
+            bg-blue-600
+            hover:bg-blue-700
+            text-white
+            px-6
+            py-3
+            rounded-xl
+            font-medium
+            shadow
+          "
+        >
+          Save Signature Position
+        </button>
+
+        <button
+          onClick={handleGeneratePdf}
+          className="
+            bg-green-600
+            hover:bg-green-700
+            text-white
+            px-6
+            py-3
+            rounded-xl
+            font-medium
+            shadow
+          "
+        >
+          Generate Signed PDF
+        </button>
+
       </div>
 
-      <button
-        onClick={handleSave}
-        className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg"
-      >
-        Save Signature Position
-      </button>
-      <button
-        onClick={handleGeneratePdf}
-        className="
-  mt-4
-  ml-3
-  bg-green-600
-  hover:bg-green-700
-  text-white
-  px-5
-  py-2
-  rounded-lg"
-      >
-        Generate Signed PDF
-      </button>
+      {/* Signed PDF Section */}
+
       {signedPdfUrl && (
-  <div className="mt-6">
-    <a
-      href={signedPdfUrl}
-      target="_blank"
-      rel="noreferrer"
-      className="
-        bg-purple-600
-        hover:bg-purple-700
-        text-white
-        px-5
-        py-2
-        rounded-lg
-      "
-    >
-      View Signed PDF
-    </a>
+        <div
+          className="
+            mt-8
+            bg-white
+            rounded-2xl
+            shadow-lg
+            p-6
+          "
+        >
+          <h3 className="text-xl font-bold text-slate-800 mb-4">
+            Signed PDF Ready
+          </h3>
+
+          <div className="flex gap-4">
+
+            <a
+              href={signedPdfUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="
+                bg-purple-600
+                hover:bg-purple-700
+                text-white
+                px-5
+                py-3
+                rounded-xl
+                font-medium
+              "
+            >
+              View Signed PDF
+            </a>
+
+            <a
+              href={signedPdfUrl}
+              download
+              className="
+                bg-blue-600
+                hover:bg-blue-700
+                text-white
+                px-5
+                py-3
+                rounded-xl
+                font-medium
+              "
+            >
+              Download Signed PDF
+            </a>
+
+          </div>
+        </div>
+      )}
+
+    </div>
+
   </div>
-)}
-    </>
-  );
+);
 }

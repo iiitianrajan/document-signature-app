@@ -39,7 +39,9 @@ exports.createSignature = async (req, res) => {
 
 exports.finalizeSignature = async (req, res) => {
   try {
-    const document = await Document.findById(req.params.id);
+    const document = await Document.findById(
+      req.params.id
+    );
 
     if (!document) {
       return res.status(404).json({
@@ -47,9 +49,10 @@ exports.finalizeSignature = async (req, res) => {
       });
     }
 
-    const signature = await Signature.findOne({
-      documentId: document._id,
-    });
+    const signature =
+      await Signature.findOne({
+        documentId: document._id,
+      });
 
     if (!signature) {
       return res.status(404).json({
@@ -57,59 +60,131 @@ exports.finalizeSignature = async (req, res) => {
       });
     }
 
-    const existingPdf = fs.readFileSync(document.filePath);
+    const existingPdf =
+      fs.readFileSync(
+        document.filePath
+      );
 
-    const pdfDoc = await PDFDocument.load(existingPdf);
+    const pdfDoc =
+      await PDFDocument.load(
+        existingPdf
+      );
 
-    const pages = pdfDoc.getPages();
+    const pages =
+      pdfDoc.getPages();
 
-    const page = pages[signature.page - 1];
+    const page =
+      pages[
+        signature.page - 1
+      ];
 
-    if (signature.signatureImage) {
-      const base64 = signature.signatureImage.split(",")[1];
+    const pageHeight =
+      page.getHeight();
 
-      const pngImage = await pdfDoc.embedPng(Buffer.from(base64, "base64"));
+    const signX =
+      signature.x;
 
-      page.drawImage(pngImage, {
-        x: signature.x,
-        y: signature.y,
-        width: 120,
-        height: 60,
-      });
+    const signY =
+      pageHeight -
+      signature.y -
+      60;
+
+    // Draw Signature Image
+
+    if (
+      signature.signatureImage
+    ) {
+      const base64 =
+        signature.signatureImage
+          .split(",")[1];
+
+      const pngImage =
+        await pdfDoc.embedPng(
+          Buffer.from(
+            base64,
+            "base64"
+          )
+        );
+
+      page.drawImage(
+        pngImage,
+        {
+          x: signX,
+          y: signY,
+          width: 120,
+          height: 60,
+        }
+      );
     }
 
-    page.drawText(new Date().toLocaleString(), {
-      x: signature.x,
-      y: signature.y - 20,
-      size: 10,
-    });
+    // Draw Timestamp closer to signature
 
-    const pdfBytes = await pdfDoc.save();
+    page.drawText(
+      `Signed: ${new Date().toLocaleString()}`,
+      {
+        x: signX,
+        y: signY - 5,
+        size: 8,
+      }
+    );
 
-    const fileName = `signed-${Date.now()}.pdf`;
+    const pdfBytes =
+      await pdfDoc.save();
 
-    const outputPath = path.join("signed-pdfs", fileName);
+    const fileName =
+      `signed-${Date.now()}.pdf`;
 
-    fs.writeFileSync(outputPath, pdfBytes);
+    const outputPath =
+      path.join(
+        "signed-pdfs",
+        fileName
+      );
 
-    document.status = "SIGNED";
+    fs.writeFileSync(
+      outputPath,
+      pdfBytes
+    );
+
+    // Update Signature
+
+    signature.status =
+      "SIGNED";
+
+    await signature.save();
+
+    // Update Document
+
+    document.status =
+      "SIGNED";
 
     await document.save();
+
+    // Audit Log
+
     await createAudit({
-      documentId: document._id,
-      userId: req.user.id,
-      action: "SIGNED_PDF_GENERATED",
-      ipAddress: req.ip,
+      documentId:
+        document._id,
+      userId:
+        signature.signer,
+      action:
+        "SIGNED_PDF_GENERATED",
+      ipAddress:
+        req.ip,
     });
 
     res.json({
       success: true,
-      signedPdf: outputPath,
+      signedPdf:
+        outputPath,
     });
+
   } catch (error) {
+
     res.status(500).json({
-      message: error.message,
+      message:
+        error.message,
     });
+
   }
 };
 
@@ -368,6 +443,13 @@ exports.rejectSignature = async (req, res) => {
     signature.rejectReason = reason;
 
     await signature.save();
+    const document = await Document.findById(signature.documentId);
+
+    if (document) {
+      document.status = "REJECTED";
+
+      await document.save();
+    }
 
     await createAudit({
       documentId: signature.documentId,

@@ -16,6 +16,7 @@ export default function Dashboard() {
   const [email, setEmail] = useState("");
   const [generatedLink, setGeneratedLink] = useState("");
   const [selectedDocumentId, setSelectedDocumentId] = useState("");
+  const [filter, setFilter] = useState("ALL");
 
   useEffect(() => {
     fetchDocuments();
@@ -54,8 +55,12 @@ export default function Dashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await sendSignatureEmail(email, generatedLink, 
-        selectedDocumentId,token);
+      const res = await sendSignatureEmail(
+        email,
+        generatedLink,
+        selectedDocumentId,
+        token,
+      );
 
       alert(res.data.message);
 
@@ -96,7 +101,15 @@ export default function Dashboard() {
   ).length;
 
   const signedDocs = documents.filter((doc) => doc.status === "SIGNED").length;
+  const rejectedDocs = documents.filter(
+    (doc) => doc.status === "REJECTED",
+  ).length;
 
+  const filteredDocuments = documents.filter((doc) => {
+    if (filter === "ALL") return true;
+
+    return doc.status === filter;
+  });
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-950 flex items-center justify-center">
@@ -146,7 +159,12 @@ export default function Dashboard() {
         </div>
 
         {/* Stats */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div
+          className="grid
+grid-cols-1
+md:grid-cols-2
+lg:grid-cols-4 gap-6 mb-8"
+        >
           <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6">
             <div className="flex justify-between items-center">
               <div>
@@ -191,7 +209,35 @@ export default function Dashboard() {
         </div>
 
         <UploadDocument refreshDocuments={fetchDocuments} />
+        <div className="flex flex-wrap gap-3 mb-6">
+          <button
+            onClick={() => setFilter("ALL")}
+            className="px-4 py-2 rounded-lg bg-slate-700 text-white"
+          >
+            All
+          </button>
 
+          <button
+            onClick={() => setFilter("PENDING")}
+            className="px-4 py-2 rounded-lg bg-yellow-500 text-white"
+          >
+            Pending
+          </button>
+
+          <button
+            onClick={() => setFilter("SIGNED")}
+            className="px-4 py-2 rounded-lg bg-green-600 text-white"
+          >
+            Signed
+          </button>
+
+          <button
+            onClick={() => setFilter("REJECTED")}
+            className="px-4 py-2 rounded-lg bg-red-600 text-white"
+          >
+            Rejected
+          </button>
+        </div>
         {/* Documents */}
         <div className="bg-white rounded-3xl shadow-2xl p-8">
           <div className="flex justify-between items-center mb-8">
@@ -211,12 +257,13 @@ export default function Dashboard() {
               </h3>
 
               <p className="text-gray-500 mt-2">
-                Upload your first PDF to get started.
+                Upload your first PDF and start collecting digital signatures
+                securely.
               </p>
             </div>
           ) : (
             <div className="grid gap-5">
-              {documents.map((doc) => (
+              {filteredDocuments.map((doc) => (
                 <div
                   key={doc._id}
                   className="border border-gray-200 rounded-2xl p-5 hover:shadow-lg transition"
@@ -241,7 +288,9 @@ export default function Dashboard() {
                         className={`px-3 py-1 rounded-full text-sm font-medium ${
                           doc.status === "SIGNED"
                             ? "bg-green-100 text-green-700"
-                            : "bg-yellow-100 text-yellow-700"
+                            : doc.status === "REJECTED"
+                              ? "bg-red-100 text-red-700"
+                              : "bg-yellow-100 text-yellow-700"
                         }`}
                       >
                         {doc.status}
