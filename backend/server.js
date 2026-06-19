@@ -16,7 +16,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: "https://document-signature-app.vercel.app",
+    origin: "https://document-signature-app-nu.vercel.app",
     credentials: true,
   }),
 );

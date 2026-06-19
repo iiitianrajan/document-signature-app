@@ -201,7 +201,7 @@ exports.generateLink = async (req, res) => {
 
   await signature.save();
 
-  const link = `https://document-signature-app.vercel.app/${signature.publicToken}`;
+  const link = `https://document-signature-app-nu.vercel.app/${signature.publicToken}`;
 
   res.json({
     success: true,
